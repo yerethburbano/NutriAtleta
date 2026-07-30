@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<!-- Driver.js CSS y JS desde CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css"/>
+<script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NutriAtleta — Alimentos Funcionales en Deportistas Juveniles</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root{
+    --bg: #0e2233;
+    --bg-deep: #0a1a28;
+    --card: #163247;
+    --card-hi: #1c3d55;
+    --line: rgba(255,255,255,0.09);
+    --green: #3ecf8e;
+    --green-dim: rgba(62,207,142,0.15);
+    --orange: #e8763c;
+    --orange-dim: rgba(232,118,60,0.15);
+    --gold: #f0b429;
+    --gold-dim: rgba(240,180,41,0.15);
+    --white: #ffffff;
+    --ink: #eaf2f7;
+    --muted: #9db2c3;
+    --black: #000000;
+    --radius: 14px;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--body);
+    line-height:1.8;
+    letter-spacing:0.01em;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  ::selection{background:var(--green); color:var(--black);}
+
+  a{color:var(--green); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(10,26,40,0.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-wrap{
+    max-width:1200px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px; gap:20px; flex-wrap:wrap;
+  }
+  .logo{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--display); font-weight:700; font-size:1.3rem;
+    letter-spacing:0.02em;
+  }
+  .logo .mark{
+    width:34px; height:34px; border-radius:9px;
+    background:linear-gradient(135deg, var(--green), var(--gold));
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.1rem;
+  }
+  .logo span.accent{color:var(--green);}
+  nav.tabs{display:flex; gap:4px; flex-wrap:wrap;}
+  nav.tabs button{
+    font-family:var(--body); font-weight:600; font-size:0.85rem;
+    color:var(--muted); background:transparent; border:none;
+    padding:9px 14px; border-radius:8px; cursor:pointer;
+    transition:all .2s ease; letter-spacing:0.01em;
+  }
+  nav.tabs button:hover{color:var(--ink); background:var(--card);}
+  nav.tabs button.active{color:var(--bg); background:var(--green);}
+  nav.tabs button:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+
+  /*Tour*/
+  /* ==================== PERSONALIZACIÓN TOUR (DRIVER.JS) ==================== */
+
+  /* Contenedor principal: Fondo azul oscuro, más ancho y sin bordes verdes */
+  .driver-popover {
+    background-color: var(--bg) !important; /* Azul oscuro del fondo principal */
+    border: 1px solid var(--line) !important; /* Borde discreto igual al de la interfaz */
+    border-radius: var(--radius) !important;
+    color: var(--ink) !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7) !important;
+    font-family: var(--body) !important;
+    padding: 24px !important;
+    max-width: 440px !important; /* Aumentado para que sea más ancho */
+    width: 90vw !important; /* Responsivo en celulares */
+  }
+
+  /* Flecha del cuadro adaptada al azul oscuro */
+  .driver-popover-arrow-side-top { border-top-color: var(--bg) !important; }
+  .driver-popover-arrow-side-bottom { border-bottom-color: var(--bg) !important; }
+  .driver-popover-arrow-side-left { border-left-color: var(--bg) !important; }
+  .driver-popover-arrow-side-right { border-right-color: var(--bg) !important; }
+
+  /* Título */
+  .driver-popover-header,
+  header.driver-popover-title {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* Ajusta el título para que se vea limpio */
+  .driver-popover-title {
+    background: transparent !important;
+    font-family: var(--display) !important;
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    color: var(--ink) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Descripción */
+  .driver-popover-description {
+    font-size: 0.95rem !important;
+    color: var(--muted) !important;
+    line-height: 1.6 !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* Pie del popover (Botones) */
+  .driver-popover-footer {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    margin-top: 8px !important;
+  }
+
+  .driver-popover-footer button {
+    font-family: var(--body) !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    padding: 10px 18px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    text-shadow: none !important;
+  }
+
+  /* Botón Principal (Siguiente / Entendido) */
+  .driver-popover-next-btn,
+  .driver-popover-close-btn {
+    background-color: var(--green) !important;
+    color: var(--bg) !important;
+    border: none !important;
+  }
+
+  .driver-popover-next-btn:hover {
+    filter: brightness(1.1) !important;
+  }
+
+  /* Botón Secundario (Anterior) */
+  .driver-popover-prev-btn {
+    background-color: var(--card) !important;
+    color: var(--ink) !important;
+    border: 1px solid var(--line) !important;
+  }
+
+  .driver-popover-prev-btn:hover {
+    background-color: var(--card-hi) !important;
+  }
+
+  /* Texto del contador (ej. 1 de 4) */
+  .driver-popover-progress-text {
+    font-family: var(--mono) !important;
+    font-size: 0.8rem !important;
+    color: var(--muted) !important;
+  }
+
+  /* Quita el borde/resaltado verde alrededor del elemento enfocado */
+  .driver-active-element {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .btn-tour-help {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .btn-tour-help:hover {
+    color: var(--ink);
+    border-color: var(--green);
+  }
+
+  /* ---------- LAYOUT ---------- */
+  main{flex:1; max-width:1200px; margin:0 auto; padding:48px 24px 80px; width:100%;}
+  section.panel{display:none; animation:fadeIn .4s ease;}
+  section.panel.active{display:block;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .eyebrow{
+    font-family:var(--mono); font-size:0.75rem; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--green); margin-bottom:10px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{content:''; width:22px; height:2px; background:var(--green); display:inline-block;}
+  h1.page-title{
+    font-family:var(--display); font-weight:700; font-size:clamp(1.9rem,4vw,3rem);
+    margin-bottom:16px; line-height:1.1;
+  }
+  .lede{color:var(--muted); font-size:1.05rem; max-width:760px; margin-bottom:40px;}
+
+  h2.h-section{
+    font-family:var(--display); font-weight:600; font-size:1.5rem;
+    margin:44px 0 18px; padding-top:8px;
+    border-top:1px solid var(--line);
+  }
+  h2.h-section:first-of-type{border-top:none; margin-top:0;}
+  h3.h-sub{font-family:var(--display); font-weight:600; font-size:1.15rem; margin:22px 0 10px; color:var(--gold);}
+
+  p{margin-bottom:16px; color:var(--ink); text-align: justify;}
+  p.muted{color:var(--muted);}
+  .cite{color:var(--green); font-family:var(--mono); font-size:0.82em; white-space:nowrap;}
+  .cite a{color:var(--green);}
+
+  .callout{
+    background:var(--card); border:1px solid var(--green);
+    border-radius:var(--radius); padding:22px 24px; margin:20px 0;
+  }
+  .callout .label{font-family:var(--mono); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--green); margin-bottom:8px; display:block;}
+
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:20px 0;}
+  .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin:20px 0;}
+  @media (max-width:820px){.grid-2, .grid-3{grid-template-columns:1fr;}}
+
+  .stat-card{
+    background:var(--card); border-radius:var(--radius); padding:20px;
+    border-left:3px solid var(--orange);
+  }
+  .stat-card .num{font-family:var(--display); font-weight:700; font-size:1.7rem; color:var(--orange);}
+  .stat-card .lbl{color:var(--muted); font-size:0.88rem; margin-top:4px;}
+
+  /* ---------- INICIO (problem cards) ---------- */
+  .problem-card{
+    background:var(--card); border-radius:var(--radius); padding:24px;
+    border-top:3px solid var(--green);
+  }
+  .problem-card h4{font-family:var(--display); color:var(--green); margin-bottom:10px; font-size:1.05rem;}
+
+  /* ---------- QUIENES SOMOS ---------- */
+  .team-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px; margin:24px 0 8px;}
+  @media (max-width:820px){.team-grid{grid-template-columns:1fr;}}
+  .author-card{
+    background:var(--card); border-radius:var(--radius); padding:28px;
+    text-align:center; border-bottom:3px solid var(--gold);
+  }
+  .author-card .avatar {
+    width: 76px; 
+    height: 76px; 
+    border-radius: 50%; 
+    margin: 0 auto 16px;
+    background: linear-gradient(135deg, var(--green), var(--orange));
+    padding: 2px; /* Crea un marco o borde con el gradiente verde-naranja */
+    overflow: hidden; /* Corta la imagen para que quede perfectamente circular */
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+  }
+
+  /* Regla nueva para adaptar la imagen dentro del avatar */
+  .author-card .avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover; /* Evita que la foto se deforme o estire */
+    display: block;
+  }
+  .author-card h4{font-family:var(--display); font-size:1.15rem; margin-bottom:4px;}
+  .author-card .role{color:var(--muted); font-size:0.88rem;}
+  .meta-panel{
+    background:var(--bg-deep); border:1px solid var(--line); border-radius:var(--radius);
+    padding:26px; margin-top:28px;
+  }
+  .meta-row{display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line); font-size:0.95rem;}
+  .meta-row:last-child{border-bottom:none;}
+  .meta-row .k{color:var(--muted); font-family:var(--mono); font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em;}
+  .meta-row .v{font-weight:600; text-align:right;}
+
+  /* ---------- ALIMENTOS FUNCIONALES (accordions) ---------- */
+  .compound-card{
+    background:var(--card); border-radius:var(--radius); padding:22px;
+    margin-bottom:14px; border-left:3px solid var(--green);
+  }
+  .compound-card.orange-b{border-left-color:var(--orange);}
+  .compound-card.gold-b{border-left-color:var(--gold);}
+  .compound-card h4{font-family:var(--display); font-size:1.05rem; margin-bottom:6px;}
+  .tag-row{display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 12px;}
+  .tag{
+    font-family:var(--mono); font-size:0.72rem; padding:3px 10px; border-radius:20px;
+    background:var(--green-dim); color:var(--green); text-transform:uppercase; letter-spacing:0.05em;
+  }
+  .tag.orange{background:var(--orange-dim); color:var(--orange);}
+  .tag.gold{background:var(--gold-dim); color:var(--gold);}
+
+  /* ---------- PLAN DE JUEGO ---------- */
+  .phase-selector{display:flex; gap:10px; margin-bottom:28px; flex-wrap:wrap; }
+  .phase-btn{
+    flex:1; min-width:180px; background:var(--card); border:2px solid transparent;
+    border-radius:var(--radius); padding:16px 18px; cursor:pointer; text-align:left;
+    color:var(--ink); font-family:var(--body); transition:all .2s ease;
+  }
+  .phase-btn .ph-label{font-family:var(--mono); font-size:0.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em;}
+  .phase-btn .ph-name{font-family:var(--display); font-weight:600; font-size:1.05rem; margin-top:2px;}
+  .phase-btn.active{border-color:var(--green); background:var(--card-hi);}
+  .phase-btn:focus-visible{outline:2px solid var(--gold);}
+
+  .phase-panel{display:none;}
+  .phase-panel.active{display:block; animation:fadeIn .35s ease;}
+
+  .phase-def{
+    background:var(--bg-deep); border:1px solid var(--line); border-radius:var(--radius);
+    padding:22px 24px; margin-bottom:28px;
+  }
+  .phase-def .label{font-family:var(--mono); font-size:0.75rem; color:var(--gold); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:8px;}
+
+  .carousel {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 8px 4px 20px;
+  scroll-snap-type: x mandatory;
+  width: 100%;
+}
+  .carousel::-webkit-scrollbar{height:6px;}
+  .carousel::-webkit-scrollbar-thumb{background:var(--card-hi); border-radius:4px;}
+
+  /* ---------- FOOD CARD ---------- */
+  .food-card {
+  flex: 1 1 180px;
+  min-width: 170px;
+  height: 280px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px 16px;
+  transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+}
+  .food-card:hover{
+    transform:translateY(-6px); border-color:var(--green);
+    box-shadow:inset 0 0 0 999px rgba(0,0,0,0.42);
+  }
+  .food-card .icon{
+    width:100px; height:100px; border-radius:50%;
+    background:var(--green-dim); display:flex; align-items:center; justify-content:center;
+    color:var(--green); margin-bottom:16px; position:relative; z-index:2;
+    transition:transform .3s ease;
+  }
+  .food-card .icon svg{width:44px; height:44px; stroke-width:1.75;}
+  .food-card:hover .icon{transform:scale(1.06);}
+  .food-card .name{
+    font-family:var(--display); font-weight:700; font-size:1.05rem; color:var(--ink);
+    position:relative; z-index:2;
+  }
+  .food-card .hint{
+    font-size:0.78rem; color:var(--green); margin-top:10px; opacity:0;
+    transition:opacity .3s ease; position:relative; z-index:2;
+  }
+  .food-card:hover .hint{opacity:1;}
+  .food-card .overlay{
+    position:absolute; top:14px; right:14px; width:30px; height:30px; border-radius:50%;
+    background:var(--card-hi); display:flex; align-items:center; justify-content:center;
+    color:var(--green); font-size:1.05rem; opacity:0; transform:scale(.7); z-index:2;
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .food-card:hover .overlay{opacity:1; transform:scale(1);}
+
+  /* ---------- MODAL ---------- */
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(0,0,0,0.72); z-index:200;
+    display:none; align-items:center; justify-content:center; padding:24px;
+  }
+  .modal-backdrop.active{display:flex;}
+  .modal{
+    background:var(--card); border-radius:18px; max-width:760px; width:100%;
+    padding:32px; position:relative; border-top:4px solid var(--green);
+    max-height:86vh; overflow-y:auto;
+  }
+  .modal .close-btn{
+    position:absolute; top:18px; right:18px; background:var(--bg-deep); border:none;
+    color:var(--muted); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:1.1rem;
+  }
+  .modal .close-btn:hover{color:var(--ink);}
+  .modal .m-icon{
+    width:72px; height:72px; border-radius:50%;
+    background:var(--green-dim); display:flex; align-items:center; justify-content:center;
+    color:var(--green); margin-bottom:16px;
+  }
+  .modal .m-icon svg{width:34px; height:34px; stroke-width:1.75;}
+  .modal h3{font-family:var(--display); font-size:1.4rem; margin-bottom:6px;}
+  .modal .m-tags{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .modal .m-field{margin-bottom:16px;}
+  .modal .m-field .k{font-family:var(--mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold); margin-bottom:4px;}
+  .modal .m-field .v{color:var(--ink);}
+
+  /* ---------- REFERENCIAS ---------- */
+  .filter-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:28px;}
+  .filter-btn{
+    font-family:var(--mono); font-size:0.75rem; padding:7px 14px; border-radius:20px;
+    background:var(--card); border:1px solid var(--line); color:var(--muted); cursor:pointer;
+    text-transform:uppercase; letter-spacing:0.04em; transition:all .15s ease;
+  }
+  .filter-btn:hover{color:var(--ink);}
+  .filter-btn.active{background:var(--green); color:var(--bg); border-color:var(--green);}
+  .ref-list{display:flex; flex-direction:column; gap:10px;}
+  .ref-item{
+    background:var(--card); border-radius:10px; padding:14px 18px;
+    display:flex; gap:14px; align-items:flex-start; border-left:3px solid var(--line);
+  }
+  .ref-item .n{font-family:var(--mono); color:var(--green); font-weight:600; min-width:28px;}
+  .ref-item .t{flex:1;}
+  .ref-item .t a{font-size:0.92rem;}
+  .ref-item .cat{font-family:var(--mono); font-size:0.68rem; color:var(--muted); text-transform:uppercase; margin-top:4px; display:block;}
+  .ref-item.hidden{display:none;}
+
+  /* ---------- CONCLUSIONES ---------- */
+  .conclusion-item{
+    display:flex; gap:18px; background:var(--card); border-radius:var(--radius);
+    padding:22px; margin-bottom:14px;
+  }
+  .conclusion-item .cn{
+    font-family:var(--display); font-weight:700; font-size:1.4rem; color:var(--gold);
+    min-width:32px;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    background:var(--bg-deep); border-top:1px solid var(--line); padding:44px 24px 28px;
+  }
+  .footer-wrap{max-width:1200px; margin:0 auto;}
+  .footer-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:28px; margin-bottom:28px;}
+  @media (max-width:820px){.footer-grid{grid-template-columns:1fr;}}
+  .footer-col h5{font-family:var(--mono); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--green); margin-bottom:12px;}
+  .footer-col p{font-size:0.9rem; color:var(--muted); margin-bottom:6px;}
+  .footer-col a{color:var(--ink);}
+  .footer-bottom{
+    border-top:1px solid var(--line); padding-top:20px; text-align:center;
+    color:var(--muted); font-size:0.82rem; font-family:var(--mono);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+  .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #ffffff;
+  }
+
+  .logo-icon {
+    width: 28px;
+    height: 28px;
+    color: var(--green);
+    stroke-width: 2.2;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <div class="logo"><i data-lucide="apple" class="logo-icon"></i><span>NUTRIATLETA</span></div>
+    <nav class="tabs" id="tabnav">
+      <button data-tab="inicio" class="active">Inicio</button>
+      <button data-tab="quienes">¿Quiénes somos?</button>
+      <button data-tab="alimentos">¿Alimentos funcionales?</button>
+      <button data-tab="plan">Plan de juego</button>
+      <button data-tab="conclusiones">Conclusiones</button>
+      <button data-tab="referencias">Referencias</button>
+      <button onclick="iniciarTour()" class="btn-tour-help"><i data-lucide="help-circle"></i> Tour guiado</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ A. INICIO ============ -->
+<section class="panel active" id="inicio">
+  <div class="eyebrow">Planteamiento del problema</div>
+  <h1 class="page-title">Cuando el plato no alcanza a cubrir el crecimiento ni la competencia</h1>
+  <p class="lede">En el deporte juvenil de rendimiento (atletas entre 12 y 18 años) convergen dos demandas fisiológicas críticas e inseparables: los requerimientos metabólicos del ejercicio de alta intensidad y el gasto calórico inherente a la maduración ósea, la hipertrofia tisular y el desarrollo puberal.</p>
+
+  <h2 class="h-section">Contextualización</h2>
+  <p>La nutrición en deportistas juveniles constituye un área compleja de la medicina del deporte, ya que en esta etapa convergen los altos requerimientos energéticos derivados del entrenamiento y la competición de alto rendimiento con las demandas metabólicas inherentes al crecimiento, la maduración ósea y el desarrollo fisiológico <span class="cite">[1]</span>. La evidencia internacional subraya que aplicar directamente las pautas nutricionales de adultos en atletas en desarrollo resulta inadecuado y riesgoso <span class="cite">[4]</span>. La periodización nutricional y la incorporación de alimentos funcionales y compuestos bioactivos emergen como herramientas fundamentales para optimizar el rendimiento peri-competitivo sin comprometer la salud biológica ni el desarrollo integral a largo plazo <span class="cite">[2]</span>.</p>
+
+  <div class="callout">
+    <span class="label">Marco normativo</span>
+    Las directrices de la OMS para adolescentes de 5 a 17 años estipulan un mínimo de 60 minutos diarios de actividad física de moderada a vigorosa (MVPA), con actividades de fortalecimiento muscular y óseo al menos tres días por semana <span class="cite">[5][6][7][8]</span>. Sin embargo, los atletas juveniles de competición superan con frecuencia estos umbrales basales de salud pública, sometiéndose a volúmenes e intensidades de entrenamiento sumamente elevados <span class="cite">[4]</span>.
+  </div>
+
+  <h2 class="h-section">El contexto biológico único del deportista adolescente</h2>
+  <p>El Consenso del Comité Olímpico Internacional (COI) sobre atletas juveniles de élite enfatiza que la adolescencia es un periodo dinámico, no lineal y asincrónico, en el que progresan de manera no concurrente los atributos físicos, fisiológicos, psicológicos y sociales <span class="cite">[1][9][10]</span>. El ritmo de maduración física y el desarrollo musculoesquelético varían sustancialmente entre individuos de la misma edad cronológica <span class="cite">[9]</span>, lo que genera una vulnerabilidad incrementada a lesiones por sobreuso y a perturbaciones metabólicas cuando las cargas de entrenamiento no se equilibran con un aporte nutricional adecuado <span class="cite">[1]</span>.</p>
+
+  <div class="grid-3">
+    <div class="stat-card">
+      <div class="num">~300 kcal/día</div>
+      <div class="lbl">Subestimación del gasto energético basal al usar fórmulas de RMR diseñadas para adultos <span class="cite">[1]</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="num">3640 ± 830</div>
+      <div class="lbl">kcal/día de gasto calórico total promedio en varones deportistas juveniles <span class="cite">[1]</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="num">3100 ± 720</div>
+      <div class="lbl">kcal/día de gasto calórico total promedio en mujeres deportistas juveniles <span class="cite">[1]</span></div>
+    </div>
+  </div>
+
+  <p>El costo energético del crecimiento —aunque menor en términos calóricos absolutos (~2.0 kcal/g de tejido ganado, equivalentes a ~33 kcal/día en periodos de aumento ponderal típico)— posee una prioridad biológica crítica <span class="cite">[1]</span>. Cuando la ingesta calórica es insuficiente para cubrir la suma del gasto por ejercicio y las demandas basales, se origina un estado de Baja Disponibilidad Energética (LEA) <span class="cite">[1]</span>.</p>
+
+  <div class="grid-2">
+    <div class="problem-card">
+      <h4>Deficiencia Energética Relativa en el Deporte (REDs)</h4>
+      <p class="muted" style="margin-bottom:0;">La persistencia de una LEA conduce a la supresión del eje hipotálamo-hipófisis-gonadal, retraso puberal, disfunción menstrual, alteración en la acumulación de masa mineral ósea pico, talla baja estructural, inmunosupresión y riesgo elevado de lesiones condrales y fracturas por estrés <span class="cite">[1]</span>.</p>
+    </div>
+    <div class="problem-card">
+      <h4>Desconocimiento de la matriz nutracéutica</h4>
+      <p class="muted" style="margin-bottom:0;">A este panorama se suma el desconocimiento sobre cómo la matriz de los alimentos funcionales ricos en nitratos, polifenoles y agentes tampón puede mitigar el daño muscular (EIMD) y sostener la euglucemia durante el esfuerzo <span class="cite">[4][22]</span>.</p>
+    </div>
+  </div>
+
+  <h2 class="h-section">Problema principal</h2>
+  <div class="callout" style="border-color:var(--orange);">
+    <span class="label" style="color:var(--orange);">Síntesis del problema</span>
+    El desconocimiento y la escasa incorporación de alimentos funcionales periodizados en la nutrición de deportistas juveniles aumentan el riesgo de sufrir el síndrome de REDs, limitando su rendimiento físico-cognitivo, acelerando la fatiga por depleción de glucógeno y ralentizando la recuperación metabólica e inmunológica en las fases pre-competitiva, competitiva y post-competitiva <span class="cite">[1][2][4]</span>.
+  </div>
+
+  <p class="muted" style="margin-top:32px;">Frente a esto, las guías de <em>Sports Dietitians Australia</em> (SDA) desaconsejan el uso indiscriminado de suplementos sintéticos aislados y ratifican priorizar el consumo de alimentos enteros (<em>core foods</em>), educando en hábitos sostenibles para la salud a largo plazo <span class="cite">[2][3][11]</span>.</p>
+</section>
+
+<!-- ============ B. QUIENES SOMOS ============ -->
+<section class="panel" id="quienes">
+  <div class="eyebrow">El equipo</div>
+  <h1 class="page-title">¿Quiénes somos?</h1>
+  <p class="lede">NutriAtleta nace como un proyecto académico de divulgación científica sobre nutrición deportiva juvenil, desarrollado en el marco de la asignatura de Nutrición.</p>
+
+  <div class="team-grid">
+    <div class="author-card">
+      <div class="avatar">
+        <img src="C:\Users\yeret\Downloads\index\profe.png" alt="Luis Eduardo Hurtado">
+      </div>
+      <h4>Luis Eduardo Hurtado</h4>
+      <div class="role">Autor</div>
+    </div>
+
+    <div class="author-card">
+      <div class="avatar">
+        <img src="C:\Users\yeret\Downloads\index\diana.png" alt="Diana Carolina Bayona Sánchez">
+      </div>
+      <h4>Diana Carolina Bayona Sánchez</h4>
+      <div class="role">Autora</div>
+    </div>
+  </div>
+
+  <div class="meta-panel">
+    <div class="meta-row"><span class="k">Asignatura</span><span class="v">Nutrición</span></div>
+    <div class="meta-row"><span class="k">Tema</span><span class="v">Alimentos Funcionales</span></div>
+    <div class="meta-row"><span class="k">Profesor</span><span class="v">Israel José Vargas Cuadrado</span></div>
+    <div class="meta-row"><span class="k">Universidad</span><span class="v">Universidad Incca de Colombia</span></div>
+  </div>
+</section>
+
+<!-- ============ C. ALIMENTOS FUNCIONALES ============ -->
+<section class="panel" id="alimentos">
+  <div class="eyebrow">Estado del arte</div>
+  <h1 class="page-title">¿Qué es un alimento funcional?</h1>
+
+  <div class="callout">
+    <span class="label">Definición</span>
+    Un alimento funcional se define como aquel que, además de aportar un valor nutricional básico, contiene componentes biológicamente activos capaces de ofrecer beneficios fisiológicos adicionales, optimizando la salud o reduciendo el riesgo de padecer patologías <span class="cite">[4][23]</span>. En el ámbito de la nutrición deportiva pediátrica y juvenil, su estudio permite obtener efectos ergogénicos y protectores a través de matrices alimentarias naturales, evitando sustancias sintéticas aisladas que conllevan riesgos de dopaje inadvertido o efectos adversos en organismos en desarrollo <span class="cite">[2]</span>.
+  </div>
+
+  <h2 class="h-section">Recuperación deportiva y modulación antiinflamatoria</h2>
+  <p>La recuperación deportiva es el conjunto de procesos fisiológicos e inmunológicos mediante los cuales el organismo repara las microlesiones en los sarcómeros —el daño muscular inducido por el ejercicio o EIMD— y restaura la homeostasis tisular tras el esfuerzo <span class="cite">[22]</span>. Durante el ejercicio extenuante se genera rotura microestructural de sarcómeros, estrés oxidativo por acumulación de especies reactivas de oxígeno (ROS) e inflamación secundaria <span class="cite">[22]</span>.</p>
+  <p>Aquí es donde la modulación antiinflamatoria entra a jugar un papel directo: los alimentos funcionales de matriz entera ricos en polifenoles (antocianinas) y flavonoides inhiben la peroxidación lipídica, atenúan los niveles plasmáticos de creatina quinasa (CK) y reducen el dolor muscular de aparición tardía (DOMS), acelerando el retorno a la función muscular plena <span class="cite">[4][22]</span>. En otras palabras, cuanto mejor se sostiene la respuesta antiinflamatoria mediante la dieta, más rápida y completa es la recuperación deportiva del atleta.</p>
+
+  <h2 class="h-section">Arquitectura de macronutrientes en el atleta en desarrollo</h2>
+  <div class="grid-3">
+    <div class="compound-card">
+      <h4>Proteínas</h4>
+      <div class="tag-row"><span class="tag">~1.5 g/kg/día</span></div>
+      <p class="muted" style="margin-bottom:0;">La ingesta fraccionada en dosis de 0.22–0.33 g/kg (~0.3 g/kg cada 3–4 horas, 5 tomas diarias) optimiza la síntesis proteica muscular. Ingestas superiores a 2.5 g/kg/día no aportan beneficio adicional y desplazan otros nutrientes <span class="cite">[12]</span>.</p>
+    </div>
+    <div class="compound-card orange-b">
+      <h4>Carbohidratos</h4>
+      <div class="tag-row"><span class="tag orange">6–10 g/kg/día</span></div>
+      <p class="muted" style="margin-bottom:0;">Sustrato energético de elección para el sistema nervioso central y la masa muscular. Los adolescentes almacenan menos glucógeno que los adultos, por lo que entre el 50% y 55% de la energía diaria debe proceder de CHO, pudiendo llegar al 70% en fases competitivas intensas <span class="cite">[13]</span>.</p>
+    </div>
+    <div class="compound-card gold-b">
+      <h4>Micronutrientes críticos</h4>
+      <div class="tag-row"><span class="tag gold">Ca · Vit D · Fe</span></div>
+      <p class="muted" style="margin-bottom:0;">Calcio para la mineralización ósea (>40% de la masa ósea adulta se acumula en la pubertad), vitamina D para su absorción y la función inmune, y hierro para la síntesis de hemoglobina y el transporte de oxígeno <span class="cite">[2]</span>.</p>
+    </div>
+  </div>
+
+  <h2 class="h-section">Alimentos funcionales: el impulso natural</h2>
+  <p class="muted">Cuatro familias de compuestos bioactivos concentran la mayor evidencia científica en deportistas juveniles:</p>
+
+  <div class="compound-card">
+    <h4> Jugo de remolacha (<em>Beta vulgaris</em>) y nitrato dietético</h4>
+    <div class="tag-row"><span class="tag">Evidencia emergente / fuerte</span></div>
+    <p style="margin-bottom:0;">Es la fuente de nitrato inorgánico (NO₃⁻) más estudiada. Su efecto ocurre por la vía enterosalival nitrato–nitrito–óxido nítrico: el 25% del nitrato plasmático es captado por las glándulas salivales, bacterias del dorso de la lengua lo reducen a nitrito, y en el ambiente ácido gástrico —y en condiciones de hipoxia y bajo pH del músculo en ejercicio— se convierte en óxido nítrico (NO) <span class="cite">[15][16]</span>. El NO promueve vasodilatación con afinidad por fibras Tipo II, mejora la eficiencia mitocondrial (menor costo de O₂) y optimiza el manejo de Ca²⁺ en la contracción muscular <span class="cite">[15][16]</span>. En judocas adolescentes, 140 mL (~12.8 mmol de NO₃⁻) aumentó el salto vertical en +3%, la fuerza de prensión en +8.4% y las proyecciones en +2.4% <span class="cite">[15][17]</span>; en futbolistas jóvenes incrementó la potencia pico en Wingate en +11.5% <span class="cite">[17]</span>; y en varones adolescentes elevó la fuerza isométrica pico en +13.9% <span class="cite">[20]</span>. La literatura también reporta resultados mixtos en esprints repetidos <span class="cite">[16]</span>.</p>
+  </div>
+
+  <div class="compound-card orange-b">
+    <h4> Polifenoles de cereza ácida (<em>Prunus cerasus</em>)</h4>
+    <div class="tag-row"><span class="tag orange">Evidencia moderada-fuerte</span></div>
+    <p style="margin-bottom:0;">Ricas en antocianinas y flavonoides con alta capacidad antioxidante y antiinflamatoria. Atenúan la elevación de creatina quinasa (CK) y reducen la peroxidación lipídica, preservando la fuerza muscular y acelerando la recuperación funcional entre 24 y 48 horas posteriores al esfuerzo <span class="cite">[4][22]</span>.</p>
+  </div>
+
+  <div class="compound-card gold-b">
+    <h4> Citrato de sodio como tampón extracelular</h4>
+    <div class="tag-row"><span class="tag gold">Evidencia moderada</span></div>
+    <p style="margin-bottom:0;">Durante el ejercicio anaeróbico láctico, la acumulación intracelular de protones (H⁺) reduce el pH muscular e interfiere con la glucólisis. La ingesta pre-competitiva de citrato de sodio (0.3 g/kg) incrementa el bicarbonato plasmático, facilitando la eflución de H⁺ y preservando la técnica bajo fatiga <span class="cite">[19][21]</span>.</p>
+  </div>
+
+  <div class="compound-card">
+    <h4> Omega-3 y curcumina</h4>
+    <div class="tag-row"><span class="tag">Evidencia moderada-fuerte</span></div>
+    <p style="margin-bottom:0;">El EPA, el DHA y la curcumina modulan las cascadas inflamatorias al inhibir el factor NF-κB y la vía de las ciclooxigenasas. Su inclusión sistemática atenúa el DOMS, protege la función inmunológica y apoya la adaptación neuromuscular sin interferir en la señalización celular adaptativa <span class="cite">[4]</span>.</p>
+  </div>
+</section>
+
+<!-- ============ D. PLAN DE JUEGO ============ -->
+<section class="panel" id="plan">
+  <div class="eyebrow">Línea de tiempo peri-competitiva</div>
+  <h1 class="page-title">Plan de juego</h1>
+  <p class="lede">Explora cada fase de la competencia. Pasa el cursor sobre un alimento para verlo destacado, y haz clic para conocer por qué, para qué y cómo consumirlo.</p>
+
+  <div class="phase-selector" id="phase-selector">
+    <button class="phase-btn active" data-phase="pre">
+      <div class="ph-label">Fase 1 · 3-4h antes</div>
+      <div class="ph-name">Pre-competencia</div>
+    </button>
+    <button class="phase-btn" data-phase="intra">
+      <div class="ph-label">Fase 2 · Durante</div>
+      <div class="ph-name">Intra-competencia</div>
+    </button>
+    <button class="phase-btn" data-phase="post">
+      <div class="ph-label">Fase 3 · 0-48h después</div>
+      <div class="ph-name">Post-competencia</div>
+    </button>
+  </div>
+
+  <!-- PRE -->
+  <div class="phase-panel active" id="phase-pre">
+    <div class="phase-def">
+      <span class="label">Definición formal</span>
+      <p style="margin-bottom:0;">Fase orientada a maximizar los depósitos de glucógeno muscular y hepático, asegurar un estado óptimo de euhidratación y disponibilizar compuestos bioactivos en el torrente sanguíneo justo al inicio del evento, minimizando cualquier molestia gastrointestinal <span class="cite">[12][13][17]</span>.</p>
+    </div>
+    <div class="carousel" data-phase-group="pre"></div>
+  </div>
+
+  <!-- INTRA -->
+  <div class="phase-panel" id="phase-intra">
+    <div class="phase-def">
+      <span class="label">Definición formal</span>
+      <p style="margin-bottom:0;">Fase centrada en sostener la glucemia (>4.0 mmol/L), atenuar la tasa de depleción del glucógeno muscular, retrasar la fatiga del sistema nervioso central y prevenir estados de deshidratación superiores al 2% de la masa corporal en eventos que superen los 60 minutos <span class="cite">[12][13]</span>.</p>
+    </div>
+    <div class="carousel" data-phase-group="intra"></div>
+  </div>
+
+  <!-- POST -->
+  <div class="phase-panel" id="phase-post">
+    <div class="phase-def">
+      <span class="label">Definición formal</span>
+      <p style="margin-bottom:0;">Fase de las "4 R" — Reintegrar, Reponer, Reparar y Restaurar. Busca activar la vía mTORC1 para la síntesis proteica, acelerar la resíntesis de glucógeno, modular la respuesta inflamatoria (DOMS) y proteger la salud digestiva e inmunitaria <span class="cite">[12][4]</span>.</p>
+    </div>
+    <div class="carousel" data-phase-group="post"></div>
+  </div>
+
+  <div class="callout" style="border-color:var(--gold); margin-top:36px;">
+    <span class="label" style="color:var(--gold);">Regla de oro</span>
+    "Nunca probar un alimento o protocolo nuevo el día de la competencia." Todos los alimentos funcionales deben testearse durante los entrenamientos regulares para evaluar la tolerancia gastrointestinal individual de cada atleta, priorizando siempre alimentos reales frente a suplementos procesados <span class="cite">[2]</span>.
+  </div>
+</section>
+
+<!-- ============ E. CONCLUSIONES ============ -->
+<section class="panel" id="conclusiones">
+  <div class="eyebrow">Síntesis final</div>
+  <h1 class="page-title">Conclusiones</h1>
+
+  <div class="conclusion-item">
+    <div class="cn">01</div>
+    <p style="margin-bottom:0;">La evaluación de las necesidades energéticas debe considerar siempre el costo metabólico de la maduración tisular: usar ecuaciones diseñadas para adultos induce subestimaciones de hasta 300 kcal/día, incrementando el riesgo de Baja Disponibilidad Energética (LEA) y el síndrome de REDs <span class="cite">[1]</span>.</p>
+  </div>
+  <div class="conclusion-item">
+    <div class="cn">02</div>
+    <p style="margin-bottom:0;">La periodización de macronutrientes es la base del soporte metabólico: carbohidratos en dosis de 4 g/kg pre-evento, al 6% durante la prueba y 1–1.5 g/kg post-evento, combinados con proteína de alto valor biológico (0.3 g/kg cada 3–4 horas), satisfacen la demanda del entrenamiento y estimulan el remodelado muscular <span class="cite">[12]</span>.</p>
+  </div>
+  <div class="conclusion-item">
+    <div class="cn">03</div>
+    <p style="margin-bottom:0;">Los alimentos funcionales de matriz entera —prioritariamente el jugo de remolacha rico en nitrato inorgánico y el concentrado de cereza ácida rico en polifenoles— demuestran efectividad ergogénica y protectora comprobada en jóvenes atletas, constituyendo una estrategia segura frente al uso de suplementos sintéticos aislados <span class="cite">[2][4]</span>.</p>
+  </div>
+  <div class="conclusion-item">
+    <div class="cn">04</div>
+    <p style="margin-bottom:0;">Todo protocolo nutricional peri-competitivo debe someterse a prueba previa durante las fases de entrenamiento —nunca el día de la competencia— y contar con el acompañamiento de profesionales de la nutrición y la medicina del deporte <span class="cite">[2]</span>.</p>
+  </div>
+</section>
+
+<!-- ============ F. REFERENCIAS ============ -->
+<section class="panel" id="referencias">
+  <div class="eyebrow">Bibliografía</div>
+  <h1 class="page-title">Referencias</h1>
+  <p class="lede">23 fuentes científicas respaldan el contenido de este sitio. Filtra por tipo de fuente para explorarlas.</p>
+
+  <div class="filter-row" id="filter-row">
+    <button class="filter-btn active" data-cat="todas">Todas</button>
+    <button class="filter-btn" data-cat="oms">OMS</button>
+    <button class="filter-btn" data-cat="ioc">IOC</button>
+    <button class="filter-btn" data-cat="sda">SDA</button>
+    <button class="filter-btn" data-cat="recomendaciones">Recomendaciones dietéticas</button>
+    <button class="filter-btn" data-cat="ergogenicos">Nitrato / rendimiento</button>
+    <button class="filter-btn" data-cat="recuperacion">Recuperación muscular</button>
+    <button class="filter-btn" data-cat="bioactivos">Compuestos bioactivos</button>
+    <button class="filter-btn" data-cat="marco">Marco teórico</button>
+  </div>
+
+  <div class="ref-list" id="ref-list"></div>
+</section>
+
+</main>
+
+<footer>
+  <div class="footer-wrap">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h5>Autores</h5>
+        <p><strong>Luis Eduardo Hurtado</strong><br>leduardoh@unincca.edu.co</p>
+        <p><strong>Diana Carolina Bayona Sánchez</strong><br>bsdianac@unincca.edu.co</p>
+      </div>
+      <div class="footer-col">
+        <h5>Diseño de contenido</h5>
+        <p><strong>Angela Yereth Burbano</strong><br>yereth.burbano745@gmail.com</p>
+      </div>
+      <div class="footer-col">
+        <h5>Proyecto académico</h5>
+        <p>Asignatura de Nutrición<br>Universidad Incca de Colombia<br>Prof. Israel José Vargas Cuadrado</p>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 NutriAtleta — Contenido con fines educativos, no sustituye la valoración de un profesional en nutrición o medicina del deporte.</div>
+  </div>
+</footer>
+
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal">
+    <button class="close-btn" id="modal-close">✕</button>
+    <div class="m-icon" id="m-icon"></div>
+    <h3 id="m-name"></h3>
+    <div class="m-tags" id="m-tags"></div>
+    <div class="m-field"><div class="k">Componentes bioactivos</div><div class="v" id="m-bio"></div></div>
+    <div class="m-field"><div class="k">Por qué funciona (mecanismo)</div><div class="v" id="m-mech"></div></div>
+    <div class="m-field"><div class="k">Para qué se usa</div><div class="v" id="m-for"></div></div>
+    <div class="m-field"><div class="k">Cómo y cuándo consumirlo</div><div class="v" id="m-dose"></div></div>
+  </div>
+</div>
+
+<script>
+/* ---------------- TAB NAVIGATION ---------------- */
+const tabButtons = document.querySelectorAll('nav.tabs button');
+const panels = document.querySelectorAll('section.panel');
+tabButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabButtons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    panels.forEach(p=>p.classList.remove('active'));
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+/* ---------------- PHASE SELECTOR ---------------- */
+const phaseButtons = document.querySelectorAll('.phase-btn');
+const phasePanels = document.querySelectorAll('.phase-panel');
+phaseButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    phaseButtons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    phasePanels.forEach(p=>p.classList.remove('active'));
+    document.getElementById('phase-'+btn.dataset.phase).classList.add('active');
+  });
+});
+
+/* ---------------- FOOD DATA ---------------- */
+const foods = {
+  pre: [
+    {icon:'wheat', name:'Avena Integral / Harina de Avena', tags:['Consenso científico alto'], bio:'β-glucanos (fibra soluble) y carbohidratos complejos de absorción progresiva.', mech:'Sostiene la glucemia plasmática sin generar picos insulínicos ni rebotes hipoglucémicos.', purpose:'Maximizar la reserva de glucógeno hepático antes de competir, con liberación de energía estable durante todo el evento.', dose:'3 a 4 horas antes de competir. 1.0–1.5 g/kg de peso corporal en avena cocida, con agua o leche descremada.'},
+    {icon:'cup-soda', name:'Jugo de Remolacha (Beta vulgaris)', tags:['Evidencia emergente / fuerte'], bio:'Nitratos inorgánicos (NO₃⁻).', mech:'Conversión por la vía nitrato-nitrito-óxido nítrico (NO), generando vasodilatación, menor costo de oxígeno submáximo (VO₂) y mayor eficiencia mitocondrial.', purpose:'Mejorar la fuerza muscular, la potencia explosiva y la eficiencia del flujo sanguíneo justo al inicio de la competencia.', dose:'2.5 a 3 horas antes. 140 mL de concentrado, o 300–400 mL de jugo natural (≈400–600 mg de nitratos).'},
+    {icon:'cookie', name:'Cacao Puro / Chocolate Negro (>70%)', tags:['Evidencia moderada-fuerte'], bio:'Flavonoides (procianidinas y catequinas).', mech:'Promueve la síntesis de óxido nítrico endotelial, disminuye la peroxidación lipídica y mejora la perfusión cerebral y muscular.', purpose:'Reforzar la vasodilatación y proteger frente al estrés oxidativo previo a la competencia.', dose:'2 horas antes de competir. 20–30 g de chocolate negro alto en cacao.'},
+    {icon:'banana', name:'Banano / Plátano Maduro', tags:['Consenso práctico / fuerte'], bio:'Glucosa, fructosa, sacarosa y potasio (K⁺).', mech:'Carga rápida de carbohidratos de fácil digestibilidad para reponer el glucógeno hepático.', purpose:'Aportar un último impulso de energía de rápida absorción sin generar molestias digestivas.', dose:'1 a 2 horas antes. 1 unidad mediana (≈25–30 g de CHO).'}
+  ],
+  intra: [
+    {icon:'droplet', name:'Miel de Abejas Natural', tags:['Evidencia fuerte'], bio:'Carbohidratos de transporte dual (fructosa:glucosa ≈ 1:1) y enzimas naturales.', mech:'Activa simultáneamente los transportadores intestinales SGLT1 (glucosa) y GLUT5 (fructosa), aumentando la oxidación de carbohidratos exógenos sin sobrecargar el tracto gastrointestinal.', purpose:'Mantener la glucemia estable durante pausas o descansos del juego sin generar malestar digestivo.', dose:'Entre tiempos o descansos. 15–30 g (1 cucharada sopera ≈ 17–20 g de CHO).'},
+    {icon:'glass-water', name:'Agua de Coco Natural', tags:['Evidencia moderada / consenso de hidratación'], bio:'Electrólitos biodisponibles (K⁺, Na⁺, Mg²⁺).', mech:'Rehidratante natural hipotónico de baja osmolaridad que acelera el vaciado gástrico y reduce el riesgo de calambres musculares.', purpose:'Reponer electrolitos perdidos por el sudor y mantener una hidratación óptima durante el esfuerzo.', dose:'Sorbos continuos cada 15–20 minutos. 150–250 mL por toma.'},
+    {icon:'hop', name:'Dátiles / Pasas', tags:['Evidencia fuerte'], bio:'Glucosa, fructosa y polifenoles.', mech:'Densidad energética elevada en un volumen reducido, de fácil masticación y asimilación rápida.', purpose:'Aportar energía concentrada en pausas cortas de juego sin ocupar volumen gástrico.', dose:'Pausas inter-juego. 2 a 3 unidades (≈20–30 g de CHO).'}
+  ],
+  post: [
+    {icon:'milk', name:'Leche Achocolatada Descremada', tags:['Consenso científico alto'], bio:'Proteína de suero (whey), caseína, leucina, lactosa y electrólitos (Na⁺, K⁺).', mech:'Proporción ideal CHO:Proteína (3–4:1). La proteína de suero estimula de inmediato la síntesis proteica, mientras la caseína mantiene la liberación prolongada de aminoácidos.', purpose:'Reponer glucógeno y activar la reparación muscular en la ventana de máxima sensibilidad post-esfuerzo.', dose:'Primeros 30 minutos post-esfuerzo. 300–400 mL aproximadamente.'},
+    {icon:'glass-water', name:'Yogurt Probiótico / Kéfir', tags:['Evidencia moderada-fuerte'], bio:'Cepas probióticas (Lactobacillus acidophilus, L. casei), péptidos bioactivos y calcio.', mech:'Restaura la integridad de la barrera intestinal afectada por la isquemia esplácnica y la hipertermia del ejercicio, reduciendo la translocación bacteriana y reforzando la inmunidad.', purpose:'Proteger la salud digestiva e inmunitaria del deportista tras el esfuerzo.', dose:'1 hora post-evento o como merienda. 150–200 g.'},
+    {icon:'egg', name:'Huevos Enteros', tags:['Consenso científico alto'], bio:'Proteína de alto valor biológico (PDCAAS = 1.0), leucina, colina, vitamina D y fosfolípidos de la yema.', mech:'La matriz del huevo entero estimula la remodelación muscular post-ejercicio de forma más eficiente que la clara aislada.', purpose:'Aportar los aminoácidos esenciales para la reparación del tejido muscular dañado.', dose:'1 a 2 horas post-evento. 2 a 3 huevos cocidos o revueltos.'},
+    {icon:'fish', name:'Pescado Azul (Salmón, Sardinas, Atún)', tags:['Consenso científico alto'], bio:'Ácidos grasos Omega-3 (EPA y DHA) y aminoácidos esenciales.', mech:'Modula la cascada inflamatoria (inhibición de NF-κB), disminuye el DOMS y favorece la sensibilidad a la insulina.', purpose:'Reducir la inflamación post-esfuerzo y acelerar la recuperación funcional.', dose:'En la comida principal post-evento. 120–150 g.'},
+    {icon:'cherry', name:'Cereza Ácida (Tart Cherry / Montmorency)', tags:['Evidencia emergente fuerte'], bio:'Antocianinas tipos 1 y 2, flavonoides y melatonina exógena natural.', mech:'Reduce marcadores de daño muscular (creatina quinasa) y estrés oxidativo, promoviendo el descanso reparador nocturno.', purpose:'Acelerar la recuperación muscular y mejorar la calidad del sueño en las horas siguientes a la competencia.', dose:'30 minutos antes de dormir. 30 mL de concentrado o 200 mL de jugo natural.'}
+  ]
+};
+
+function buildCarousels(){
+  document.querySelectorAll('.carousel').forEach(carousel=>{
+    const group = carousel.dataset.phaseGroup;
+    foods[group].forEach((food, idx)=>{
+      const card = document.createElement('div');
+      card.className='food-card';
+      card.tabIndex = 0;
+      card.innerHTML = `
+        <div class="icon"><i data-lucide="${food.icon}"></i></div>
+        <div class="name">${food.name}</div>
+        <div class="hint">Ver detalle</div>
+        <div class="overlay">＋</div>
+      `;
+      card.addEventListener('click', ()=>openModal(group, idx));
+      card.addEventListener('keydown', (e)=>{ if(e.key==='Enter') openModal(group, idx); });
+      carousel.appendChild(card);
+    });
+  });
+  lucide.createIcons();
+}
+buildCarousels();
+
+/* ---------------- MODAL ---------------- */
+const backdrop = document.getElementById('modal-backdrop');
+function openModal(group, idx){
+  const f = foods[group][idx];
+  document.getElementById('m-icon').innerHTML = `<i data-lucide="${f.icon}"></i>`;
+  lucide.createIcons();
+  document.getElementById('m-name').textContent = f.name;
+  document.getElementById('m-tags').innerHTML = f.tags.map(t=>`<span class="tag">${t}</span>`).join('');
+  document.getElementById('m-bio').textContent = f.bio;
+  document.getElementById('m-mech').textContent = f.mech;
+  document.getElementById('m-for').textContent = f.purpose;
+  document.getElementById('m-dose').textContent = f.dose;
+  backdrop.classList.add('active');
+}
+document.getElementById('modal-close').addEventListener('click', ()=>backdrop.classList.remove('active'));
+backdrop.addEventListener('click', (e)=>{ if(e.target===backdrop) backdrop.classList.remove('active'); });
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') backdrop.classList.remove('active'); });
+
+/* ---------------- REFERENCES ---------------- */
+const references = [
+  {n:1, t:'Youth Athlete Development and Nutrition', src:'PMC - NIH', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC8566439/', cat:'recomendaciones'},
+  {n:2, t:'Sports Dietitians Australia position statement: sports nutrition for the adolescent athlete', src:'PubMed', url:'https://pubmed.ncbi.nlm.nih.gov/24668620/', cat:'sda'},
+  {n:3, t:'Sports Dietitians Australia Position Statement: Sports Nutrition for the Adolescent Athlete', src:'Griffith Research Online', url:'https://research-repository.griffith.edu.au/server/api/core/bitstreams/c55ea06d-e6bb-52a4-8b04-8b3944ac29c6/content', cat:'sda'},
+  {n:4, t:'Use of Nutritional Strategies, Bioactive Compounds, and Dietary Supplements in Young Athletes', src:'PMC', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC12251387/', cat:'bioactivos'},
+  {n:5, t:'2020 WHO guidelines on physical activity and sedentary behaviour for children and adolescents', src:'PMC', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC7691077/', cat:'oms'},
+  {n:6, t:'World Health Organization 2020 guidelines on physical activity and sedentary behaviour', src:'British Journal of Sports Medicine', url:'https://bjsm.bmj.com/content/54/24/1451', cat:'oms'},
+  {n:7, t:'RECOMMENDATIONS — WHO Guidelines on Physical Activity and Sedentary Behaviour', src:'NCBI Bookshelf', url:'https://www.ncbi.nlm.nih.gov/books/NBK566046/', cat:'oms'},
+  {n:8, t:'World Health Organization 2020 guidelines on physical activity and sedentary behaviour', src:'PMC', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC7719906/', cat:'oms'},
+  {n:9, t:'IOC consensus statement on elite youth athletes competing at the Olympic Games', src:'PubMed', url:'https://pubmed.ncbi.nlm.nih.gov/39197945/', cat:'ioc'},
+  {n:10, t:'IOC consensus statement on elite youth athletes competing at the Olympic Games', src:'British Journal of Sports Medicine', url:'https://bjsm.bmj.com/content/58/17/946', cat:'ioc'},
+  {n:11, t:'Sports Dietitians Australia Position Statement: Sports Nutrition for the Adolescent Athlete', src:'ResearchGate', url:'https://www.researchgate.net/publication/261105132_Sports_Dietitians_Australia_Position_Statement_Sports_Nutrition_for_the_Adolescent_Athlete', cat:'sda'},
+  {n:12, t:'Nutritional Recommendations for the Young Athlete', src:'PMC', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC12088083/', cat:'recomendaciones'},
+  {n:13, t:'Nutrition for Children and Adolescents Who Practice Sport: A Narrative Review', src:'PMC', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC11357223/', cat:'recomendaciones'},
+  {n:14, t:'Key Nutritional Considerations for Youth Winter Sports Athletes to Optimize Growth, Maturation and Sporting Development', src:'PMC', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC7873521/', cat:'recomendaciones'},
+  {n:15, t:'Acute beetroot juice supplementation enhances judo-specific performance, explosive power, and muscular strength in recreational adolescent judokas', src:'PMC', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC12527901/', cat:'ergogenicos'},
+  {n:16, t:'Does Beetroot Supplementation Improve Performance in Combat Sports Athletes? A Systematic Review of Randomized Controlled Trials', src:'PMC', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC9860842/', cat:'ergogenicos'},
+  {n:17, t:'Acute beetroot juice supplementation enhances short duration high-intensity exercise performance and influences muscle oxygenation in football players', src:'PMC', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC12936269/', cat:'ergogenicos'},
+  {n:18, t:'Acute beetroot juice supplementation enhances judo-specific performance, explosive power, and muscular strength in recreational adolescent judokas', src:'PubMed', url:'https://pubmed.ncbi.nlm.nih.gov/41112748/', cat:'ergogenicos'},
+  {n:19, t:'Enhancing Performance in Young Athletes: A Systematic Review of Acute Supplementation Effects', src:'PMC', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC11679880/', cat:'ergogenicos'},
+  {n:20, t:'Acute beetroot juice administration improves peak isometric force production in adolescent males', src:'PubMed', url:'https://pubmed.ncbi.nlm.nih.gov/29527927/', cat:'ergogenicos'},
+  {n:21, t:'Enhancing Performance in Young Athletes: A Systematic Review of Acute Supplementation Effects', src:'PubMed', url:'https://pubmed.ncbi.nlm.nih.gov/39770925/', cat:'ergogenicos'},
+  {n:22, t:'Broad Spectrum Polyphenol Supplementation from Tart Cherry Extract on Markers of Recovery from Intense Resistance Exercise', src:'PubMed', url:'https://pubmed.ncbi.nlm.nih.gov/34126996/', cat:'recuperacion'},
+  {n:23, t:'Hasler, C. M. (2002). Functional foods: Benefits, concerns and challenges — A position paper from the American Council on Science and Health.', src:'The Journal of Nutrition, 132(12)', url:'https://doi.org/10.1093/jn/132.12.3772', cat:'marco'}
+];
+
+const catLabels = {
+  oms:'OMS', ioc:'IOC', sda:'SDA', recomendaciones:'Recomendaciones dietéticas',
+  ergogenicos:'Nitrato / rendimiento', recuperacion:'Recuperación muscular',
+  bioactivos:'Compuestos bioactivos', marco:'Marco teórico'
+};
+
+function buildReferences(){
+  const list = document.getElementById('ref-list');
+  list.innerHTML = references.map(r=>`
+    <div class="ref-item" data-cat="${r.cat}" id="ref${r.n}">
+      <div class="n">[${r.n}]</div>
+      <div class="t">
+        <a href="${r.url}" target="_blank" rel="noopener">${r.t}</a>
+        <span class="cat">${r.src} · ${catLabels[r.cat]}</span>
+      </div>
+    </div>
+  `).join('');
+}
+buildReferences();
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const cat = btn.dataset.cat;
+    document.querySelectorAll('.ref-item').forEach(item=>{
+      item.classList.toggle('hidden', cat!=='todas' && item.dataset.cat!==cat);
+    });
+  });
+});
+
+// Función para iniciar el tour guiado
+function iniciarTour() {
+  const driver = window.driver.js.driver;
+
+  const driverObj = driver({
+    showProgress: true,
+    animate: true,
+    overlayOpacity: 0.75, // Ajusta la opacidad del fondo oscuro aquí (0.1 a 1)
+    doneBtnText: '¡Entendido!',
+    nextBtnText: 'Siguiente',
+    prevBtnText: 'Anterior',
+    steps: [
+      {
+        element: '.logo',
+        popover: {
+          title: '¡Bienvenido a NutriAtleta!',
+          description: 'Esta plataforma está diseñada para optimizar la nutrición en deportistas juveniles.',
+          side: "bottom",
+          align: 'start'
+        }
+      },
+      {
+        element: 'button[data-tab="inicio"]',
+        popover: {
+          description: 'Aquí encontrarás la contextualización sobre la baja disponibilidad energética (REDs) y el contexto biológico juvenil.',
+          side: "bottom"
+        }
+      },
+      {
+        element: 'button[data-tab="alimentos"]',
+        popover: {
+          description: 'Encuentra los principales conceptos y marcos de trabajo sobre alimentos funcionales y el impacto de alimentos y compuestos bioactivos en la nutrición y rendimiento de deportistas juveniles',
+          side: "bottom"
+        }
+      },
+      {
+        element: 'button[data-tab="plan"]',
+        popover: {
+          description: 'Guía táctica y cronológica para estructurar la alimentación del atleta antes, durante y después de la competencia. Al hacer clic en cada alimento dentro de la línea de tiempo, puedes ver la dosis recomendada, el mecanismo fisiológico y el momento preciso de consumo para maximizar el rendimiento y acelerar la recuperación.',
+          side: "bottom"
+        }
+      }
+    ]
+  });
+
+  driverObj.drive();
+}
+
+// Ejecutar el tour automáticamente la primera vez que entra a la página
+document.addEventListener('DOMContentLoaded', () => {
+  // Comprueba si el usuario ya vio el tour en esta sesión para no molestarlo cada vez
+  if (!sessionStorage.getItem('tourVisto')) {
+    iniciarTour();
+    sessionStorage.setItem('tourVisto', 'true'); // Guarda el registro de que ya lo vio
+  }
+});
+</script>
+
+</body>
+</html>
