@@ -789,7 +789,7 @@
         <p><strong>Diana Carolina Bayona Sánchez</strong><br>bsdianac@unincca.edu.co</p>
       </div>
       <div class="footer-col">
-        <h5>Diseño de contenido</h5>
+        <h5>Diseño de página y contenido</h5>
         <p><strong>Angela Yereth Burbano</strong><br>yereth.burbano745@gmail.com</p>
       </div>
       <div class="footer-col">
@@ -960,14 +960,13 @@ document.querySelectorAll('.filter-btn').forEach(btn=>{
   });
 });
 
-// Función para iniciar el tour guiado
 function iniciarTour() {
   const driver = window.driver.js.driver;
 
   const driverObj = driver({
     showProgress: true,
     animate: true,
-    overlayOpacity: 0.75, // Ajusta la opacidad del fondo oscuro aquí (0.1 a 1)
+    overlayOpacity: 0.75,
     doneBtnText: '¡Entendido!',
     nextBtnText: 'Siguiente',
     prevBtnText: 'Anterior',
@@ -1008,12 +1007,10 @@ function iniciarTour() {
   driverObj.drive();
 }
 
-// Ejecutar el tour automáticamente la primera vez que entra a la página
 document.addEventListener('DOMContentLoaded', () => {
-  // Comprueba si el usuario ya vio el tour en esta sesión para no molestarlo cada vez
   if (!sessionStorage.getItem('tourVisto')) {
     iniciarTour();
-    sessionStorage.setItem('tourVisto', 'true'); // Guarda el registro de que ya lo vio
+    sessionStorage.setItem('tourVisto', 'true');
   }
 });
 </script>
